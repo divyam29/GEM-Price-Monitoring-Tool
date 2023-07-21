@@ -28,12 +28,9 @@ def s_webdriver(lst, return_dict, lst_name):
     driver = webdriver.Chrome(options=options)
     driver.get(URL)
 
-    ct = 1
     names = []
     for i1 in lst:
-        print(ct, ": ", end=" ")
         driver.get(i1)
-
         time.sleep(4)
         html = driver.page_source
 
@@ -101,7 +98,6 @@ def s_webdriver(lst, return_dict, lst_name):
 
         names.append(name)
         print()
-        ct = ct + 1
 
     driver.quit()
     return_dict[lst_name] = names
