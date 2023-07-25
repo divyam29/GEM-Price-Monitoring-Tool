@@ -1,3 +1,4 @@
+import math
 import multiprocessing
 import os
 import time
@@ -28,12 +29,14 @@ def s_webdriver(lst, return_dict, lst_name):
     driver = webdriver.Chrome(options=options)
     driver.get(URL)
 
+    ct=1
     names = []
     for i1 in lst:
         driver.get(i1)
         time.sleep(4)
         html = driver.page_source
 
+        print(f"{ct}: ",end="")
         name = {}
         name["link"] = i1
         name["name"] = "-"
@@ -98,6 +101,7 @@ def s_webdriver(lst, return_dict, lst_name):
 
         names.append(name)
         print()
+        ct+=1
 
     driver.quit()
     return_dict[lst_name] = names
@@ -109,7 +113,7 @@ def convert_to_excel(names1, filename):
         for d2 in d1:
             names.append(d2)
 
-    filename = f"OUTPUT/{filename}_output.xlsx"
+    filename = f"ZZZOUTPUT/{filename}_output.xlsx"
     df = pd.DataFrame.from_dict(names)
     df.to_excel(filename)
     esaw = []
@@ -144,16 +148,14 @@ def convert_to_excel(names1, filename):
 
     wrkbk.save(filename)
 
-
-# if __name__ == "__main__":
 def main(filename):
     start = timer()
 
-    path = "OUTPUT"
+    path = "ZZZOUTPUT"
     isExist = os.path.exists(path)
     if not isExist:
         os.makedirs(path)
-        print("The new directory 'OUTPUT' is created!")
+        print(f"The new directory '{path}' is created!\n")
 
     try:
         f = open(filename, "r")
@@ -161,16 +163,19 @@ def main(filename):
         print(f"Unable to open file")
 
     data = pd.read_excel(filename)
+    
+    print(f"Excel File: '{filename}'\n")
 
     x = filename.rfind("/")
     filename = filename[x + 1 : -5]
 
     urllist = data["LINKS"].tolist()
+    print(f"Number of Links to Process: {len(urllist)}")
     lst1, lst2, lst3, lst4 = slice_list(urllist)
-    print(len(lst1))
-    print(len(lst2))
-    print(len(lst3))
-    print(len(lst4))
+    print(f"Number of Links in Thread 1: {len(lst1)}")
+    print(f"Number of Links in Thread 2: {len(lst2)}")
+    print(f"Number of Links in Thread 3: {len(lst3)}")
+    print(f"Number of Links in Thread 4: {len(lst4)}")
 
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
@@ -196,7 +201,11 @@ def main(filename):
     convert_to_excel(names1, filename)
     end = timer()
 
-    print(end - start)
+    secs = end-start
+    print(f"Time Taken: \n{int(secs//60)} Minutes and {math.floor(secs%60)} Seconds\n")
+
+    filepath = f"OUTPUT/{filename}_output.xlsx"
+    print(f"Processed Excel File: '{os.path.abspath(filepath)}'\n")
 
 
-# pyinstaller --noconfirm --onefile --console  .\driver.py
+# pyinstaller --noconfirm --onefile --console  .\main.py

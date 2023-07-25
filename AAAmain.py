@@ -4,15 +4,15 @@ import driver
 import app
 import wmi
 
-my_key = "Seagate Backup Plus Drive"
-files = r"data"
+# my_key = "Seagate Backup Plus Drive"
+my_key = "86050C8A"
 c = wmi.WMI()
 
 
 def check_for_key():
     for disk in c.Win32_LogicalDisk():
-        if disk.VolumeName == my_key:
-            print("ENCRYPTION DISK CONNECTED")
+        if disk.VolumeSerialNumber == my_key:
+            print("ENCRYPTION DISK CONNECTED\n")
             return disk
 
 
@@ -35,8 +35,9 @@ if __name__ == "__main__":
         except PermissionError:
             print("ERROR!!!")
             print("File Opened in background")
-        except:
+        except Exception as e:
             print("ERROR!!!")
+            print(e)
 
         try:
             driver.main(filename)
@@ -49,8 +50,9 @@ if __name__ == "__main__":
         except FileNotFoundError:
             print("ERROR!!!")
             print("File Not Selected")
-        except:
+        except Exception as e:
             print("ERROR!!!")
+            print(e)
 
     else:
         print("ERROR!!!")
