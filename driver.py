@@ -208,4 +208,4 @@ def main(filename):
     print(f"Processed Excel File: '{os.path.abspath(filepath)}'\n")
 
 
-# pyinstaller --noconfirm --onefile --console  .\main.py
+# pyinstaller --noconfirm --onedir --console  .\main.py
